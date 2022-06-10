@@ -93,7 +93,7 @@ Mᵀᵀ≡M ⟦ f ⟧ = refl
     )⟧
   ≡⟨ cong ⟦_⟧ (Λ i j i<m j<n ⇒
           Σ-distri-+ (λ i₁ i<n → a i i₁ i<m i<n * b i₁ j i<n j<n)
-                      (λ i₁ i<n → a i i₁ i<m i<n * c i₁ j i<n j<n)) ⟩ 
+                     (λ i₁ i<n → a i i₁ i<m i<n * c i₁ j i<n j<n)) ⟩ 
     ⟦(
       λ i j i<m j<n →
         Σ[ i₁ < m , i<n ] (a i i₁ i<m i<n * b i₁ j i<n j<n)
