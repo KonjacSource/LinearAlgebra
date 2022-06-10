@@ -2,13 +2,14 @@ module Matrix.Properties where
 open import Matrix
 open import Structures
 open import Util
+open import Extensionality renaming (_×_ to _∧_)
+
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; cong-app; sym; trans)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Nat.Properties using (+-comm)
 open import Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc)
-open import Extensionality renaming (_×_ to _∧_)
 
 open Field {{...}}
 
@@ -72,9 +73,34 @@ Mᵀᵀ≡M ⟦ f ⟧ = refl
       Σ[ j′ < n , j′<n ] (a i j′ i<m j′<n * Σ[ i′ < k , i′<k ]
         (b j′ i′ j′<n i′<k * c i′ j i′<k j<n))
     ∎
-    
 
-
+-- 分配
+×-distri-+ˡ : {F : Set ℓ} {{fld : Field F}} →
+           ∀ (A : Mat k m F) (B C : Mat m n F) → A × (B +ᵐ C) ≡ A × B +ᵐ A × C
+×-distri-+ˡ {k = k} {m = m} {n = n} ⟦ a ⟧ ⟦ b ⟧ ⟦ c ⟧ =
+  begin
+    ⟦(
+      λ i j i<m j<n →
+        Σ[ i₁ < m , i<n ] (
+          a i i₁ i<m i<n *
+            (b i₁ j i<n j<n + c i₁ j i<n j<n))
+    )⟧
+  ≡⟨ cong ⟦_⟧ (Λ i j i<m j<n ⇒ cong (sigma-< m) (Λ i i<n ⇒ *-distri-+)) ⟩
+    ⟦(
+      λ i j i<m j<n →
+        Σ[ i₁ < m , i<n ] (
+          a i i₁ i<m i<n * b i₁ j i<n j<n + a i i₁ i<m i<n * c i₁ j i<n j<n)
+    )⟧
+  ≡⟨ cong ⟦_⟧ (Λ i j i<m j<n ⇒
+          Σ-distri-+ (λ i₁ i<n → a i i₁ i<m i<n * b i₁ j i<n j<n)
+                      (λ i₁ i<n → a i i₁ i<m i<n * c i₁ j i<n j<n)) ⟩ 
+    ⟦(
+      λ i j i<m j<n →
+        Σ[ i₁ < m , i<n ] (a i i₁ i<m i<n * b i₁ j i<n j<n)
+        +
+        Σ[ i₁ < m , i<n ] (a i i₁ i<m i<n * c i₁ j i<n j<n)
+    )⟧
+  ∎
 
 
 data SymMat {ℓ} : Mat m m A → Set ℓ where

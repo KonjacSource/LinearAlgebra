@@ -101,7 +101,8 @@ infix 20 ⟨_∙_⟩
 -- Σ 有分配律
 Σ-distri-+ : {F : Set ℓ} {{fld : Field F}} →
          ∀ {n : ℕ} (f g : (i : ℕ) → i < n → F)
-         → sigma-< n (λ i i<n → f i i<n + g i i<n) ≡ sigma-< n f + sigma-< n g
+         → Σ[ i < n , i<n ] (f i i<n + g i i<n) ≡ sigma-< n f + sigma-< n g
+         
 Σ-distri-+ {n = 0}     f g rewrite +-id {a = 0ᶠ} = refl
 Σ-distri-+ {n = suc n} f g =
   begin
